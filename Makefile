@@ -1,9 +1,13 @@
 
-default: test synth route
-	@echo "----- Start -----"
+default: testbench synth route
+	
 
-test:
+testbench:
+	@echo "#------------------------------------#"
+	@echo "#             TESTBENCH              #"
+	@echo "#------------------------------------#"
 
+	cmake --build ./build/
 synth:
 
 route:

@@ -1,3 +1,9 @@
+#Cmake
+build/
+
+# Verilator
+obj_dir/
+
 # Prerequisites
 *.d
 
