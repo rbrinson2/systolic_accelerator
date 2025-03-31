@@ -7,6 +7,7 @@
 
 int main(int argc, char const *argv[])
 {
+    Verilated::mkdir("logs");
     const std::unique_ptr<VerilatedContext> contextp{new VerilatedContext}; 
 
     contextp->debug(OFF);
