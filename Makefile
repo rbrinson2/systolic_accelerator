@@ -3,7 +3,7 @@ sources = src/MAC.sv
 testbenches = testbenches/MAC_tb.cpp
 top_exe = MAC
 
-flags = -cc --exe -x-assign fast --trace
+flags = -cc --exe -x-assign fast --trace --build -j 0
 
 default: testbench synth route
 	
@@ -16,9 +16,6 @@ testbench:
 
 	# --------------------------------------------- Verilate
 	verilator $(flags) $(sources) $(testbenches)	
-
-	# --------------------------------------------- Build
-	$(MAKE) -j -C obj_dir -f V$(top_exe).mk
 	mkdir -p logs
 	obj_dir/V$(top_exe) +trace
 
