@@ -6,59 +6,57 @@ module MAC
 )
     
 (
-    input logic                     clk, rst,
+    input                      clk, rst,
 
 
-    input logic [DATA_WIDTH - 1:0]  A_in,
-    input logic                     A_in_waiting,
-    input logic                     A_in_finished,
-    output logic                    A_in_ready,
+    input [DATA_WIDTH - 1:0]  A_in,
+    input                     A_in_waiting,
+    input                     A_in_finished,
+    output reg                   A_in_ready,
 
-    input logic [DATA_WIDTH - 1:0]  B_in,
-    input logic                     B_in_waiting,
-    input logic                     B_in_finished,
-    output logic                    B_in_ready,
+    input  [DATA_WIDTH - 1:0]  B_in,
+    input                      B_in_waiting,
+    input                      B_in_finished,
+    output reg                     B_in_ready,
 
-    // output logic [DATA_WIDTH - 1:0]  A_out,
-    output logic                     A_out_waiting,
-    output logic                     A_out_finished,
-    // input logic                      A_out_ready,
+    // output  [DATA_WIDTH - 1:0]  A_out,
+    output reg                     A_out_waiting,
+    output reg                     A_out_finished,
+    // input                       A_out_ready,
 
-    // output logic [DATA_WIDTH - 1:0]  B_out,
-    output logic                     B_out_waiting,
-    output logic                     B_out_finished,
-    // input logic                      B_out_ready,
+    // output  [DATA_WIDTH - 1:0]  B_out,
+    output reg                     B_out_waiting,
+    output reg                     B_out_finished,
+    // input                       B_out_ready,
 
 
-    output logic [DATA_WIDTH - 1:0]  C_out
+    output reg [DATA_WIDTH - 1:0]  C_out
 );
 
 
     // ---------------------------------------------- Accumulator
-    logic [DATA_WIDTH - 1:0]    accumulate;
-    logic                       accum_sig;
+    reg [DATA_WIDTH - 1:0]    accumulate;
+    reg                        accum_sig;
 
-    always_latch begin
+    always @* begin
         if (rst) accumulate = 'b0;
         else begin
-            if (accum_sig) accumulate += A_in * B_in;
+            if (accum_sig) accumulate = accumulate + A_in * B_in;
             if (A_in_finished & B_in_finished) C_out = accumulate;
         end
     end
     
     // ---------------------------------------------- FSM Variables
-    typedef enum {
-        RESET, IN_WAIT, OUT_WAIT, ACCUM, OUT
-    } states_t;
-
-    states_t                    curr_state, next_state;
+    localparam RESET = 3'b000, IN_WAIT = 3'b001, OUT_WAIT = 3'b010, ACCUM = 3'b011, OUT = 3'b100;
+    
+    reg [2:0] curr_state, next_state;
     // ---------------------------------------------- FSM
-    always_ff @(posedge clk) begin
-        if (rst) curr_state <= RESET;
-        else curr_state <= next_state;
+    always @(posedge clk) begin
+        if (rst) curr_state = RESET;
+        else curr_state = next_state;
     end
 
-    always_comb begin
+    always @* begin
         case (curr_state)
             RESET       : next_state = IN_WAIT;
             IN_WAIT     : if (A_in_waiting & B_in_waiting) next_state = ACCUM;
@@ -72,7 +70,7 @@ module MAC
     end
     
     
-    always_comb begin
+    always @* begin
         case (curr_state)
             RESET : {
                 A_in_ready,
@@ -134,15 +132,15 @@ module MAC
 
 
 
-initial begin
-    if ($test$plusargs("trace") != 0) begin
-        $display("[%0t] Tracing to logs/vlt_dump.vcd...\n", $time);
-        $dumpfile("logs/vlt_dump.vcd");
-        $dumpvars();
-    end
-    $display("[%0t] Model running...\n", $time);
-
-end
+// initial begin
+//     if ($test$plusargs("trace") != 0) begin
+//         $display("[%0t] Tracing to logs/vlt_dump.vcd...\n", $time);
+//         $dumpfile("logs/vlt_dump.vcd");
+//         $dumpvars();
+//     end
+//     $display("[%0t] Model running...\n", $time);
+// 
+// end
 
     
 endmodule
