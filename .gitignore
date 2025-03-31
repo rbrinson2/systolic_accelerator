@@ -3,6 +3,7 @@ build/
 
 # Verilator
 obj_dir/
+logs/
 
 # Prerequisites
 *.d
