@@ -38,7 +38,8 @@ int main(int argc, char const *argv[])
 
         mac->eval();
 
-        VL_PRINTF("[%" PRId64 "] clk=%x, rst=%x, A_in=%x, B_in=%x, C_out=%x \n", contextp->time(), mac->clk, mac->rst, mac->A_in, mac->B_in, mac->C_out);
+        // VL_PRINTF("[%" PRId64 "] clk=%x, rst=%x, A_in=%x, B_in=%x, C_out=%x \n",
+        //      contextp->time(), mac->clk, mac->rst, mac->A_in, mac->B_in, mac->C_out);
 
         i++;
 
