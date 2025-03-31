@@ -1,5 +1,5 @@
 
-sources = src/MAC.sv
+sources = src/MAC.v
 testbenches = testbenches/MAC_tb.cpp
 top_exe = MAC
 
@@ -18,6 +18,7 @@ testbench:
 	verilator $(flags) $(sources) $(testbenches)	
 	mkdir -p logs
 	obj_dir/V$(top_exe) +trace
+	gtkwave logs/vlt_dump.vcd
 
 synth:
 

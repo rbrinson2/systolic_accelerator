@@ -12,12 +12,12 @@ module MAC
     input [DATA_WIDTH - 1:0]  A_in,
     input                     A_in_waiting,
     input                     A_in_finished,
-    output reg                   A_in_ready,
+    output reg                A_in_ready,
 
     input  [DATA_WIDTH - 1:0]  B_in,
     input                      B_in_waiting,
     input                      B_in_finished,
-    output reg                     B_in_ready,
+    output reg                 B_in_ready,
 
     // output  [DATA_WIDTH - 1:0]  A_out,
     output reg                     A_out_waiting,
@@ -38,8 +38,11 @@ module MAC
     reg [DATA_WIDTH - 1:0]    accumulate;
     reg                        accum_sig;
 
-    always @* begin
-        if (rst) accumulate = 'b0;
+    always @(posedge clk) begin
+        if (rst) begin
+            accumulate = 'b0;
+            C_out = 'b0;
+        end
         else begin
             if (accum_sig) accumulate = accumulate + A_in * B_in;
             if (A_in_finished & B_in_finished) C_out = accumulate;
@@ -56,9 +59,9 @@ module MAC
         else curr_state = next_state;
     end
 
-    always @* begin
+    always @(posedge clk) begin
         case (curr_state)
-            RESET       : next_state = IN_WAIT;
+            RESET       : if (!rst) next_state = IN_WAIT else next_state = RESET;
             IN_WAIT     : if (A_in_waiting & B_in_waiting) next_state = ACCUM;
                           else if (A_in_finished & B_in_finished) next_state = OUT;
             ACCUM       : next_state = OUT_WAIT;
@@ -132,15 +135,12 @@ module MAC
 
 
 
-// initial begin
-//     if ($test$plusargs("trace") != 0) begin
-//         $display("[%0t] Tracing to logs/vlt_dump.vcd...\n", $time);
-//         $dumpfile("logs/vlt_dump.vcd");
-//         $dumpvars();
-//     end
-//     $display("[%0t] Model running...\n", $time);
-// 
-// end
+ initial begin
+    $display("[%0t] Tracing to logs/vlt_dump.vcd...\n", $time);
+    $dumpfile("logs/vlt_dump.vcd");
+    $dumpvars();
+    $display("[%0t] Model running...\n", $time);
+ end
 
     
 endmodule
