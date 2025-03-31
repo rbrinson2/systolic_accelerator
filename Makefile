@@ -1,7 +1,7 @@
 
 sources = src/MAC.sv
 testbenches = testbenches/MAC_tb.cpp
-top_exe = VMAC
+top_exe = MAC
 
 flags = -cc --exe -x-assign fast --trace
 
@@ -18,9 +18,9 @@ testbench:
 	verilator $(flags) $(sources) $(testbenches)	
 
 	# --------------------------------------------- Build
-	$(MAKE) -j -C obj_dir -f VMAC.mk
+	$(MAKE) -j -C obj_dir -f V$(top_exe).mk
 	mkdir -p logs
-	obj_dir/$(top_exe) +trace
+	obj_dir/V$(top_exe) +trace
 
 synth:
 
