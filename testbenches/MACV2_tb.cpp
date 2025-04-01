@@ -4,7 +4,6 @@
 #include "verilated.h"
 #include "VMACV2.h"
 
-#define BUFFER_SIZE 4
 
 int main(int argc, char const *argv[])
 {
@@ -30,33 +29,38 @@ int main(int argc, char const *argv[])
     mac->A_in_finished = 0;
     mac->B_in_finished = 0;
 
-    int i = 0;
-    while (contextp->time() < 20){
+    while (contextp->time() < 100){
         contextp->timeInc(1);
         mac->clk = !mac->clk;
 
         if (mac->clk){
             if (contextp->time() >= 0 && contextp->time() < 4){
                 mac->rst = 1;
-                i = 0;
             }
             else {
                 mac->rst = 0;
-                if (i < A_vec.size() && !mac->rst){
-                    mac->A_in = A_vec.at(i);
-                    mac->B_in = B_vec.at(i);
+                if (!A_vec.empty() && !mac->rst){
+                    mac->A_in_waiting = 1;
+                    mac->B_in_waiting = 1;
+                    if (mac->A_in_ready && mac->B_in_ready){
+                        mac->A_in = A_vec.front();
+                        mac->B_in = B_vec.front();
+                        C_golden += A_vec.front() * B_vec.front();
 
-                    C_golden += A_vec.at(i) * B_vec.at(i);
+                        A_vec.erase(A_vec.begin());
+                        B_vec.erase(B_vec.begin());
+                    }
+
                 }
-                else if (i >= A_vec.size()){
+                else if(A_vec.empty()) {
                     mac->A_in_finished = 1;
                     mac->B_in_finished = 1;
                 }
-                i++;
             }
         }
         C = mac->C_out;
         mac->eval();
+
     }
 
     mac->final();
