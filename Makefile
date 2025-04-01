@@ -1,4 +1,3 @@
-
 top_exe = MACV2
 verilog = v
 systemverilog = sv
@@ -20,10 +19,16 @@ testbench:
 	verilator $(flags) $(sources) $(testbenches)	
 	mkdir -p logs
 	obj_dir/V$(top_exe) +trace
-	gtkwave logs/vlt_dump.vcd
+
+	# --------------------------------------------- GTKWave
+	gtkwave logs/macv2_dump.vcd
 
 synth:
+	@echo "#------------------------------------#"
+	@echo "#             SYNTHESIS              #"
+	@echo "#------------------------------------#"
 
+	yosys -p "read_verilog -sv src/$(top_exe).$(systemverilog); proc; fsm; show"
 route:
 
 .PHONEY: clean

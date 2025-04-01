@@ -7,8 +7,8 @@
 
 int main(int argc, char const *argv[])
 {
-    std::vector<uint32_t> A_vec = {7,8,9,10};
-    std::vector<uint32_t> B_vec = {10,9,8,7};
+    std::vector<uint32_t> A_vec = {1,2,3,4,5,6,7,8,9,10};
+    std::vector<uint32_t> B_vec = {10,9,8,7,6,5,4,3,2,1};
     uint32_t C_golden = 0;
     uint32_t C = 0;
 

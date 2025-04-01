@@ -4,17 +4,23 @@ module MACV2(
     input clk,
     input rst,
 
+    // ---------------------------------------------------- Inputs
     input logic [31:0] A_in, B_in,
     input logic A_in_finished, B_in_finished,
     input logic A_in_waiting, B_in_waiting,
     
+    // ---------------------------------------------------- Outputs
     output logic [31:0] C_out,
     output logic A_in_ready, B_in_ready
 );
+
+
+    // ---------------------------------------------------- Module Variables
     logic [31:0]  accumulate;
     logic accum_sig;
     logic out_sig;
 
+    // ---------------------------------------------------- FSM Variables
     typedef enum {RESET, IN_WAIT, ACCUM, OUT} state_t;
     state_t current_state, next_state;
 
@@ -23,6 +29,7 @@ module MACV2(
         else current_state = next_state;
     end
 
+    // ---------------------------------------------------- FSM 
     always @(current_state) begin
         case (current_state)
             RESET : next_state = IN_WAIT;
@@ -59,41 +66,24 @@ module MACV2(
     end
     
 
+    // ---------------------------------------------------- Accumulate
     always @(accum_sig, rst) begin
         if (rst) accumulate = 'b0;
         else if(accum_sig) accumulate = accumulate + A_in * B_in;        
     end
 
+    // ---------------------------------------------------- C output
     always @(out_sig, rst) begin
         if (rst) C_out = 'b0;
         else if (out_sig) C_out = accumulate;
     end
     
-    
-        
-    
 
-    // always_ff @(posedge clk) begin
-    //     if (rst) begin 
-    //         accumulate = 'b0;
-    //         A_in_ready = 'b0;
-    //         B_in_ready = 'b0;
-    //         C_out = 'b0;
 
-    //     end  
-    //     else if (A_in_finished & B_in_finished) begin
-    //         C_out = accumulate;
-    //     end
-    //     else begin
-    //         A_in_ready = 'b1;
-    //         B_in_ready = 'b1;
-    //         accumulate = accumulate + A_in * B_in;
-    //     end      
-    // end
-
+    // ---------------------------------------------------- Tracing
     initial begin
         $display("[%0t] Tracing to logs/vlt_dump.vcd...\n", $time);
-        $dumpfile("logs/vlt_dump.vcd");
+        $dumpfile("logs/macv2_dump.vcd");
         $dumpvars();
         $display("[%0t] Model running...\n", $time);
     end
