@@ -39,7 +39,7 @@ int main(int argc, char const *argv[])
             }
             else {
                 mac->rst = 0;
-                if (!A_vec.empty() && !mac->rst){
+                if (!A_vec.empty() && !B_vec.empty() && !mac->rst){
                     mac->A_in_waiting = 1;
                     mac->B_in_waiting = 1;
                     if (mac->A_in_ready && mac->B_in_ready){
@@ -52,7 +52,7 @@ int main(int argc, char const *argv[])
                     }
 
                 }
-                else if(A_vec.empty()) {
+                else if(A_vec.empty() && B_vec.empty()) {
                     mac->A_in_finished = 1;
                     mac->B_in_finished = 1;
                 }
