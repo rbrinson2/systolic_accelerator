@@ -54,15 +54,9 @@ int main(int argc, char const *argv[])
                 }
                 i++;
             }
-
-
         }
-
-
         C = mac->C_out;
-
         mac->eval();
-
     }
 
     mac->final();
