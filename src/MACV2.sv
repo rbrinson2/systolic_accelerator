@@ -24,12 +24,13 @@ module MACV2(
     typedef enum {RESET, IN_WAIT, ACCUM, OUT} state_t;
     state_t current_state, next_state;
 
+
+    // ---------------------------------------------------- FSM 
     always @(posedge clk) begin
         if (rst) current_state = RESET;
         else current_state = next_state;
     end
 
-    // ---------------------------------------------------- FSM 
     always @(current_state) begin
         case (current_state)
             RESET : next_state = IN_WAIT;
