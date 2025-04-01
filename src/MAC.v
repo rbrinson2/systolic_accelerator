@@ -8,7 +8,6 @@ module MAC
 (
     input                      clk, rst,
 
-
     input [DATA_WIDTH - 1:0]  A_in,
     input                     A_in_waiting,
     input                     A_in_finished,

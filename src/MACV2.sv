@@ -32,7 +32,4 @@ module MACV2(
         $display("[%0t] Model running...\n", $time);
     end
 
-
-    
-    
 endmodule

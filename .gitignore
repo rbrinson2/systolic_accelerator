@@ -5,6 +5,8 @@ build/
 obj_dir/
 logs/
 
+# Sigasi
+
 # Prerequisites
 *.d
 
