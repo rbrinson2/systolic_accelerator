@@ -61,6 +61,8 @@ int main(int argc, char const *argv[])
                 else if(A_vec.empty() && B_vec.empty()) {
                     mac->A_in_finished = 1;
                     mac->B_in_finished = 1;
+                    mac->A_in_waiting = 0;
+                    mac->B_in_waiting = 0;
                 }
             }
         }

@@ -17,7 +17,8 @@ module MACV2
     // ---------------------------------------------------- Outputs
     output logic [DATA_WIDTH - 1:0] A_out, B_out, C_out,
     output logic A_in_ready, B_in_ready,
-    output logic A_out_waiting, B_out_waiting
+    output logic A_out_waiting, B_out_waiting,
+    output logic A_out_finished, B_out_finished
 );
 
 
@@ -28,7 +29,7 @@ module MACV2
     logic pass_en;
 
     // ---------------------------------------------------- FSM Variables
-    typedef enum {RESET, IN_WAIT, ACCUM, PASS, OUT} state_t;
+    typedef enum {RESET, IN_WAIT, ACCUM, PASS, OUT, FINISHED} state_t;
     state_t current_state, next_state;
 
 
@@ -47,7 +48,8 @@ module MACV2
             end
             ACCUM : next_state = PASS;
             PASS : next_state = IN_WAIT;
-            OUT : if (!A_in_finished & !B_in_finished) next_state = IN_WAIT;
+            OUT : next_state = FINISHED;
+            FINISHED : if (A_in_waiting & B_in_waiting) next_state = IN_WAIT; 
             default : next_state = RESET;
         endcase
     end
@@ -57,6 +59,8 @@ module MACV2
         B_in_ready = 'b0;
         A_out_waiting = 'b0;
         B_out_waiting = 'b0;
+        A_out_finished = 'b0;
+        B_out_finished = 'b0;
         accum_en = 'b0;
         out_en = 'b0;
         pass_en = 'b0;
@@ -77,6 +81,10 @@ module MACV2
                 pass_en = 'b1;
             end
             OUT : out_en = 'b1;
+            FINISHED : begin
+                A_out_finished = 1'b1;
+                B_out_finished = 1'b1;
+            end
             default : ;
         endcase
     end
