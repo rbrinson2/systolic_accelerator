@@ -45,6 +45,7 @@ module MACV2
             IN_WAIT : begin 
                 if (A_in_finished & B_in_finished) next_state = OUT;
                 else if (A_in_waiting & B_in_waiting) next_state = ACCUM;
+                else next_state = IN_WAIT;
             end
             ACCUM : next_state = PASS;
             PASS : next_state = IN_WAIT;

@@ -78,7 +78,7 @@ module Top
     // ---------------------------------------------------- Tracing
     initial begin
         $display("[%0t] Tracing to logs/vlt_dump.vcd...\n", $time);
-        $dumpfile("logs/macv2_dump.vcd");
+        $dumpfile("logs/top_dump.vcd");
         $dumpvars();
         $display("[%0t] Model running...\n", $time);
     end

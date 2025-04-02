@@ -20,7 +20,7 @@ testbench:
 	obj_dir/V$(top_exe) +trace
 
 	# --------------------------------------------- GTKWave
-	gtkwave logs/macv2_dump.vcd
+	gtkwave logs/top_dump.vcd
 
 synth:
 	@echo "#------------------------------------#"
