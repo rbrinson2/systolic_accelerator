@@ -1,7 +1,6 @@
-top_exe = MACV2
-verilog = v
+top_exe = Top
 systemverilog = sv
-sources = src/$(top_exe).$(systemverilog)
+sources = src/$(top_exe).$(systemverilog) src/MACV2.$(systemverilog)
 testbenches = testbenches/$(top_exe)_tb.cpp
 
 flags = -cc --exe -x-assign fast --trace --build -j 0
