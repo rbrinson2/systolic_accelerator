@@ -1,27 +1,34 @@
 
 
-module MACV2(
+module MACV2
+#(
+    parameter DATA_WIDTH = 32
+)    
+(
     input clk,
     input rst,
 
     // ---------------------------------------------------- Inputs
-    input logic [31:0] A_in, B_in,
+    input logic [DATA_WIDTH - 1:0] A_in, B_in,
     input logic A_in_finished, B_in_finished,
     input logic A_in_waiting, B_in_waiting,
+    input logic A_out_ready, B_out_ready,
     
     // ---------------------------------------------------- Outputs
-    output logic [31:0] C_out,
-    output logic A_in_ready, B_in_ready
+    output logic [DATA_WIDTH - 1:0] A_out, B_out, C_out,
+    output logic A_in_ready, B_in_ready,
+    output logic A_out_waiting, B_out_waiting
 );
 
 
     // ---------------------------------------------------- Module Variables
-    logic [31:0]  accumulate;
-    logic accum_sig;
-    logic out_sig;
+    logic [DATA_WIDTH - 1:0]  accumulate;
+    logic accum_en;
+    logic out_en;
+    logic pass_en;
 
     // ---------------------------------------------------- FSM Variables
-    typedef enum {RESET, IN_WAIT, ACCUM, OUT} state_t;
+    typedef enum {RESET, IN_WAIT, ACCUM, PASS, OUT} state_t;
     state_t current_state, next_state;
 
 
@@ -38,7 +45,8 @@ module MACV2(
                 if (A_in_finished & B_in_finished) next_state = OUT;
                 else if (A_in_waiting & B_in_waiting) next_state = ACCUM;
             end
-            ACCUM : next_state = IN_WAIT;
+            ACCUM : next_state = PASS;
+            PASS : next_state = IN_WAIT;
             OUT : if (!A_in_finished & !B_in_finished) next_state = IN_WAIT;
             default : next_state = RESET;
         endcase
@@ -47,36 +55,56 @@ module MACV2(
     always @(current_state) begin
         A_in_ready = 'b0;
         B_in_ready = 'b0;
-        accum_sig = 'b0;
-        out_sig = 'b0;
+        A_out_waiting = 'b0;
+        B_out_waiting = 'b0;
+        accum_en = 'b0;
+        out_en = 'b0;
+        pass_en = 'b0;
 
         case (current_state)
             RESET : begin
-                A_in_ready = 0;
-                B_in_ready = 0;
+                A_in_ready = 'b0;
+                B_in_ready = 'b0;
             end
             IN_WAIT : begin
-                A_in_ready = 1;
-                B_in_ready = 1;
+                A_in_ready = 'b1;
+                B_in_ready = 'b1;
             end
-            ACCUM : begin
-                accum_sig = 1;
+            ACCUM : accum_en = 'b1;
+            PASS : begin 
+                A_out_waiting = 'b1;
+                B_out_waiting = 'b1;
+                pass_en = 'b1;
             end
-            OUT : out_sig = 1;
+            OUT : out_en = 'b1;
+            default : ;
         endcase
     end
     
 
     // ---------------------------------------------------- Accumulate
-    always @(accum_sig, rst) begin
+    always @(accum_en, rst) begin
         if (rst) accumulate = 'b0;
-        else if(accum_sig) accumulate = accumulate + A_in * B_in;        
+        else if(accum_en) accumulate = accumulate + A_in * B_in;        
     end
 
     // ---------------------------------------------------- C output
-    always @(out_sig, rst) begin
+    always @(out_en, rst) begin
         if (rst) C_out = 'b0;
-        else if (out_sig) C_out = accumulate;
+        else if (out_en) C_out = accumulate;
+    end
+
+    always @(pass_en, rst) begin
+        if (rst) begin
+            A_out = 'b0;
+            B_out = 'b0;
+        end
+        else if (pass_en) begin
+            if (A_out_ready & B_out_ready) begin
+                A_out = A_in;
+                B_out = B_in;
+            end
+        end
     end
     
 

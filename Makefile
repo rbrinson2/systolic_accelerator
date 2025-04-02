@@ -28,7 +28,7 @@ synth:
 	@echo "#             SYNTHESIS              #"
 	@echo "#------------------------------------#"
 
-	yosys -p "read_verilog -sv src/$(top_exe).$(systemverilog); proc; fsm; show"
+	yosys -p "read_verilog -sv src/$(top_exe).$(systemverilog); prep; show"
 route:
 
 .PHONEY: clean

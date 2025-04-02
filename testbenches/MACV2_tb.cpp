@@ -22,13 +22,17 @@ int main(int argc, char const *argv[])
 
     const std::unique_ptr<VMACV2> mac{new VMACV2{contextp.get(), "TOP"}};
 
+    // -- Initilize Inputs -- //
     mac->clk = 0;
     mac->rst = 1;
     mac->A_in = 0x00000000;
     mac->B_in = 0x00000000;
     mac->A_in_finished = 0;
     mac->B_in_finished = 0;
+    mac->A_out_ready = 0;
+    mac->B_out_ready = 0;
 
+    // -- TESTBENCH -- //
     while (contextp->time() < 100){
         contextp->timeInc(1);
         mac->clk = !mac->clk;
@@ -39,7 +43,9 @@ int main(int argc, char const *argv[])
             }
             else {
                 mac->rst = 0;
-                if (!A_vec.empty() && !B_vec.empty() && !mac->rst){
+                mac->A_out_ready = 1;
+                mac->B_out_ready = 1;
+                if (!A_vec.empty() && !B_vec.empty()){
                     mac->A_in_waiting = 1;
                     mac->B_in_waiting = 1;
                     if (mac->A_in_ready && mac->B_in_ready){
