@@ -51,7 +51,10 @@ int main(int argc, char const *argv[])
                 top->rst = 1;
             else {
                 top->rst = 0;
-                
+                top->A_out_ready = 1;
+                top->B_out_ready_11 = 1;
+                top->B_out_ready_12 = 1;
+
                 if (!A_vec.empty() && !B_vec_1.empty()){
                     top->A_in_waiting = 1;
                     top->B_in_waiting_11 = 1;
@@ -66,7 +69,6 @@ int main(int argc, char const *argv[])
                     }
 
                 }
-
                 if (!B_vec_2.empty()) {
                     top->B_in_waiting_12 = 1;
 
@@ -75,9 +77,17 @@ int main(int argc, char const *argv[])
 
                         B_vec_2.erase(B_vec_2.begin());
                     }
-
                 }
             }
+
+
+
+
+            if (A_vec.empty()) top->A_in_finished = 1;
+            if (B_vec_1.empty()) top->B_in_finished_11 = 1;
+            if (B_vec_2.empty()) top->B_in_finished_12 = 1;
+
+
             C_1 = top->C_out_11;
             C_2 = top->C_out_12;
         }

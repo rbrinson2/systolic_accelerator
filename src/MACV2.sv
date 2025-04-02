@@ -29,9 +29,10 @@ module MACV2
     logic pass_en;
 
     // ---------------------------------------------------- FSM Variables
-    typedef enum {RESET, IN_WAIT, ACCUM, PASS, OUT, FINISHED} state_t;
+    typedef enum {RESET, IN_WAIT, LOAD, ACCUM, PASS, OUT, FINISHED} state_t;
     state_t current_state, next_state;
-
+    logic [DATA_WIDTH - 1:0] A, B;
+    logic load_en;
 
     // ---------------------------------------------------- FSM 
     always @(posedge clk) begin
@@ -44,13 +45,23 @@ module MACV2
             RESET : next_state = IN_WAIT;
             IN_WAIT : begin 
                 if (A_in_finished & B_in_finished) next_state = OUT;
-                else if (A_in_waiting & B_in_waiting) next_state = ACCUM;
+                else if (A_in_waiting & B_in_waiting) next_state = LOAD;
                 else next_state = IN_WAIT;
             end
+            LOAD : begin 
+                if(A_in_waiting & B_in_waiting) next_state = ACCUM;
+                else next_state = LOAD;
+            end
             ACCUM : next_state = PASS;
-            PASS : next_state = IN_WAIT;
+            PASS : begin 
+                if (A_out_ready & B_out_ready) next_state = IN_WAIT;
+                else next_state = PASS;
+            end
             OUT : next_state = FINISHED;
-            FINISHED : if (A_in_waiting & B_in_waiting) next_state = IN_WAIT; 
+            FINISHED : begin 
+                if (A_in_waiting & B_in_waiting) next_state = IN_WAIT; 
+                else next_state = FINISHED;
+            end
             default : next_state = RESET;
         endcase
     end
@@ -62,15 +73,13 @@ module MACV2
         B_out_waiting = 'b0;
         A_out_finished = 'b0;
         B_out_finished = 'b0;
+        load_en = 'b0;
         accum_en = 'b0;
         out_en = 'b0;
         pass_en = 'b0;
 
         case (current_state)
-            RESET : begin
-                A_in_ready = 'b0;
-                B_in_ready = 'b0;
-            end
+            RESET : ;
             IN_WAIT : begin
                 A_in_ready = 'b1;
                 B_in_ready = 'b1;
@@ -81,6 +90,7 @@ module MACV2
                 B_out_waiting = 'b1;
                 pass_en = 'b1;
             end
+            LOAD : load_en = 'b1;
             OUT : out_en = 'b1;
             FINISHED : begin
                 A_out_finished = 1'b1;
@@ -89,12 +99,25 @@ module MACV2
             default : ;
         endcase
     end
+
+    always @(load_en, rst) begin
+        if (rst) begin
+            A = 'b0;
+            B = 'b0;
+        end
+        else if (load_en) begin
+            A = A_in;
+            B = B_in;
+        end
+        
+    end
+    
     
 
     // ---------------------------------------------------- Accumulate
     always @(accum_en, rst) begin
         if (rst) accumulate = 'b0;
-        else if(accum_en) accumulate = accumulate + A_in * B_in;        
+        else if(accum_en) accumulate = accumulate + A * B;        
     end
 
     // ---------------------------------------------------- C output
@@ -103,6 +126,7 @@ module MACV2
         else if (out_en) C_out = accumulate;
     end
 
+    // ---------------------------------------------------- A and B output
     always @(pass_en, rst) begin
         if (rst) begin
             A_out = 'b0;
@@ -110,8 +134,8 @@ module MACV2
         end
         else if (pass_en) begin
             if (A_out_ready & B_out_ready) begin
-                A_out = A_in;
-                B_out = B_in;
+                A_out = A;
+                B_out = B;
             end
         end
     end
