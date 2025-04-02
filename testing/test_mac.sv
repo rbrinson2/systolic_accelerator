@@ -11,25 +11,11 @@ module test_mac
 
     output [DATA_WIDTH - 1:0] A_out, B_out, C_out
 );
-    integer A, B, C;
 
-    always @(posedge clk) begin
-        if (rst) begin
-            A <= 'b0;
-            B <= 'b0;
-            C <= 'b0; 
-        end
-        else begin
-            A <= A_in;
-            B <= B_in;
 
-            C <= A + B;
-
-            A_out <= A;
-            B_out <= B;
-
-            C_out <= C;
-        end
-    end
+    assign C_out = A_in + B_in;
+    assign A_out = A_in;
+    assign B_out = B_in;
+    
     
 endmodule
