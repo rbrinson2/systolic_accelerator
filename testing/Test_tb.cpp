@@ -13,6 +13,7 @@ int main(int argc, char const *argv[])
     std::vector<uint32_t> C_1;
     std::vector<uint32_t> C_2;
     std::vector<uint32_t> C_3;
+    std::vector<uint32_t> C_4;
 
     Verilated::mkdir("logs");
     const std::unique_ptr<VerilatedContext> contextp{new VerilatedContext}; 
@@ -42,10 +43,6 @@ int main(int argc, char const *argv[])
 
                 A.erase(A.begin());
                 B.erase(B.begin());
-
-                C_1.push_back(top->C_out[0]);
-                C_2.push_back(top->C_out[1]);
-                C_3.push_back(top->C_out[2]);
 
             }
         }
