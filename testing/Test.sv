@@ -17,7 +17,7 @@ module Test
     genvar i, j;
     generate
         for (i = 0; i < N; i = i + 1) begin : MAC_rows
-            for (j = 0; j < N; j = j + 1) begin : MAC_cols
+            for (j = 0; j < M; j = j + 1) begin : MAC_cols
                 test_mac #(
                     .DATA_WIDTH(DATA_WIDTH)
                 ) tm_int (
@@ -29,22 +29,18 @@ module Test
                     .B_out(B_pipe[N * i + j]),
                     .C_out(C_reg[N * i + j])
                 );
+
+                if ((N * i + j) == (N * i + (M - 1))) assign A_reg[i] = A_pipe[N * i + (M - 1)];
+                if ((N * i + j) == (N * (N - 1) + j)) assign B_reg[j] = B_pipe[N * (N - 1) + j];
             end
         end
     endgenerate
 
-    assign A_reg[0] = A_pipe[2];
-    assign A_reg[1] = A_pipe[5];
-    assign A_reg[2] = A_pipe[8];
-
-    assign B_reg[0] = B_pipe[6];
-    assign B_reg[1] = B_pipe[7];
-    assign B_reg[2] = B_pipe[8];
 
     genvar k;
     generate
         for (k = 0; k < N * M; k = k + 1) begin
-            assign C_out [DATA_WIDTH*(k + 1) - 1 : DATA_WIDTH * (k + 1) - 32] = C_reg[k]; 
+            assign C_out [DATA_WIDTH*(k + 1) - 1 : DATA_WIDTH * (k + 1) - DATA_WIDTH] = C_reg[k]; 
         end
     endgenerate
     
