@@ -5,6 +5,9 @@ build/
 obj_dir/
 logs/
 
+# Yosys
+synth/result.v
+
 # Sigasi
 
 # Prerequisites

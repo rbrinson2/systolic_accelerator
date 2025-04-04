@@ -1,9 +1,6 @@
 
 
 module Test
-#(
-    parameter DATA_WIDTH = 32, N = 3, M = 3
-)    
 (
     input clk,
     input rst,
@@ -12,6 +9,7 @@ module Test
 
     output reg [DATA_WIDTH * (N * M) - 1:0] C_out
 );
+    localparam DATA_WIDTH = 32, N = 3, M = 3;
     
     wire [DATA_WIDTH - 1:0] A_pipe [N * M - 1:0], B_pipe [N * M - 1:0];
     reg [DATA_WIDTH - 1:0] C_reg [N * M - 1:0], A_reg [N - 1:0], B_reg[N - 1:0];
@@ -46,7 +44,7 @@ module Test
     genvar k;
     generate
         for (k = 0; k < N * M; k = k + 1) begin
-            assign C_out [32*k - 1 : 32 * (k - 1)] = C_reg[k]; 
+            assign C_out [DATA_WIDTH*(k + 1) - 1 : DATA_WIDTH * (k + 1) - 32] = C_reg[k]; 
         end
     endgenerate
     
