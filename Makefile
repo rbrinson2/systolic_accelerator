@@ -1,6 +1,6 @@
 
 top_exe = Test
-sources = testing/$(top_exe).sv testing/test_mac.v
+sources = testing/$(top_exe).sv testing/test_mac.v testing/test_control.v
 testbenches = testing/$(top_exe)_tb.cpp
 
 flags = -cc --exe -x-assign fast --trace --build -j 0

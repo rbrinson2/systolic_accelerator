@@ -6,14 +6,18 @@ module Test
     input rst,
 
     input [DATA_WIDTH - 1:0] A_in, B_in,
+    output load_out
 
-    output reg [DATA_WIDTH * (N * M) - 1:0] C_out
 );
     localparam DATA_WIDTH = 32, N = 3, M = 3;
     
     wire [DATA_WIDTH - 1:0] A_pipe [N * M - 1:0], B_pipe [N * M - 1:0];
     reg [DATA_WIDTH - 1:0] C_reg [N * M - 1:0], A_reg [N - 1:0], B_reg[N - 1:0];
 
+    reg load;
+
+    assign load_out = load;
+    
     genvar i, j;
     generate
         for (i = 0; i < N; i = i + 1) begin : MAC_rows
@@ -23,11 +27,18 @@ module Test
                 ) tm_int (
                     .clk(clk),
                     .rst(rst),
-                    .A_in(j == 0 ? A_in : A_pipe[N*i + j - 1] ),
-                    .B_in(i == 0 ? B_in : B_pipe[(N * i - 1) + j]),
+                    .A_in(j == 0 ? A_in : A_pipe[N * i + (j - 1)] ),
+                    .B_in(i == 0 ? B_in : B_pipe[(N * (i - 1)) + j]),
                     .A_out(A_pipe[N * i + j]),
                     .B_out(B_pipe[N * i + j]),
-                    .C_out(C_reg[N * i + j])
+                    .C_out(C_reg[N * i + j]),
+                    .load(load)
+                );
+
+                test_control tci (
+                    .clk(clk),
+                    .rst(rst),
+                    .load(load)
                 );
 
                 if ((N * i + j) == (N * i + (M - 1))) assign A_reg[i] = A_pipe[N * i + (M - 1)];
@@ -36,13 +47,6 @@ module Test
         end
     endgenerate
 
-
-    genvar k;
-    generate
-        for (k = 0; k < N * M; k = k + 1) begin
-            assign C_out [DATA_WIDTH*(k + 1) - 1 : DATA_WIDTH * (k + 1) - DATA_WIDTH] = C_reg[k]; 
-        end
-    endgenerate
     
 
 // ---------------------------------------------------- Tracing

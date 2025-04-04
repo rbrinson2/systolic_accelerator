@@ -38,11 +38,14 @@ int main(int argc, char const *argv[])
                 top->rst = 1;
             else {
                 top->rst = 0;
-                top->A_in = A.front();
-                top->B_in = B.front();
 
-                A.erase(A.begin());
-                B.erase(B.begin());
+                if (top->load_out){
+                    top->A_in = A.front();
+                    top->B_in = B.front();
+
+                    A.erase(A.begin());
+                    B.erase(B.begin());
+                }
 
             }
         }

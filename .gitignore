@@ -6,7 +6,7 @@ obj_dir/
 logs/
 
 # Yosys
-synth/result.v
+synth/results.v
 
 # Sigasi
 
