@@ -18,6 +18,12 @@ module Test
 
     assign load_out = load;
     
+    test_control tci (
+        .clk(clk),
+        .rst(rst),
+        .load(load)
+    );
+
     genvar i, j;
     generate
         for (i = 0; i < N; i = i + 1) begin : MAC_rows
@@ -35,14 +41,8 @@ module Test
                     .load(load)
                 );
 
-                test_control tci (
-                    .clk(clk),
-                    .rst(rst),
-                    .load(load)
-                );
-
-                if ((N * i + j) == (N * i + (M - 1))) assign A_reg[i] = A_pipe[N * i + (M - 1)];
-                if ((N * i + j) == (N * (N - 1) + j)) assign B_reg[j] = B_pipe[N * (N - 1) + j];
+                if ((N * i + j) == (N * i + (M - 1))) always @(posedge clk) A_reg[i] = A_pipe[N * i + (M - 1)];
+                if ((N * i + j) == (N * (N - 1) + j)) always @(posedge clk) B_reg[j] = B_pipe[N * (N - 1) + j];
             end
         end
     endgenerate

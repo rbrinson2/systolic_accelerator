@@ -1,11 +1,11 @@
 
 top_exe = Test
-sources = testing/$(top_exe).sv testing/test_mac.v testing/test_control.v
+sources = testing/$(top_exe).v testing/test_mac.v testing/test_control.v
 testbenches = testing/$(top_exe)_tb.cpp
 
 flags = -cc --exe -x-assign fast --trace --build -j 0
 
-default: testbench synth route
+default: testbench synthesis route
 	
 
 testbench:
@@ -21,6 +21,11 @@ testbench:
 
 	# --------------------------------------------- GTKWave
 	gtkwave logs/top_dump.vcd
+
+synthesis: 
+	yosys -p "read_verilog -sv $(sources); prep -top $(top_exe) -flatten -ifx; write_verilog synth/results.v; show Test"
+
+route:
 
 .PHONEY: clean
 clean:
