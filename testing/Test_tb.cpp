@@ -10,10 +10,6 @@ int main(int argc, char const *argv[])
 
     std::vector<uint32_t> A = {1,2, 3, 4, 5, 6, 7, 8, 9, 10};
     std::vector<uint32_t> B = {1,2, 3, 4, 5, 6, 7, 8, 9, 10};
-    std::vector<uint32_t> C_1;
-    std::vector<uint32_t> C_2;
-    std::vector<uint32_t> C_3;
-    std::vector<uint32_t> C_4;
 
     Verilated::mkdir("logs");
     const std::unique_ptr<VerilatedContext> contextp{new VerilatedContext}; 
@@ -28,7 +24,7 @@ int main(int argc, char const *argv[])
     top->clk = 0;
     top->rst = 1;
     
-    while (contextp->time() < 40) {
+    while (contextp->time() < 100) {
         contextp->timeInc(1);
 
         top->clk = !top->clk;
