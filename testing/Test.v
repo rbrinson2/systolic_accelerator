@@ -12,17 +12,26 @@ module Test
     localparam DATA_WIDTH = 32, N = 3, M = 3;
     
     wire [DATA_WIDTH - 1:0] A_pipe [N * M - 1:0], B_pipe [N * M - 1:0];
+    wire [N - 1:0] A_start_en;
+    wire [M - 1:0] B_start_en;
+    wire [DATA_WIDTH - 1:0] A_mux [N - 1:0];
+    wire [DATA_WIDTH - 1:0] B_mux [M - 1:0];
     reg [DATA_WIDTH - 1:0] C_reg [N * M - 1:0], A_reg [N - 1:0], B_reg[N - 1:0];
 
     reg load;
 
     assign load_out = load;
     
-    test_control tci (
+    test_control #(
+        .N(N), .M(M)
+    ) tci (
         .clk(clk),
         .rst(rst),
+        .A_start_en(A_start_en),
+        .B_start_en(B_start_en),
         .load(load)
     );
+
 
     genvar i, j;
     generate
@@ -33,8 +42,8 @@ module Test
                 ) tm_int (
                     .clk(clk),
                     .rst(rst),
-                    .A_in(j == 0 ? A_in : A_pipe[N * i + (j - 1)] ),
-                    .B_in(i == 0 ? B_in : B_pipe[(N * (i - 1)) + j]),
+                    .A_in(j == 0 ? A_mux[i] : A_pipe[N * i + (j - 1)] ),
+                    .B_in(i == 0 ? B_mux[j] : B_pipe[(N * (i - 1)) + j]),
                     .A_out(A_pipe[N * i + j]),
                     .B_out(B_pipe[N * i + j]),
                     .C_out(C_reg[N * i + j]),
@@ -43,6 +52,9 @@ module Test
 
                 if ((N * i + j) == (N * i + (M - 1))) always @(posedge clk) A_reg[i] = A_pipe[N * i + (M - 1)];
                 if ((N * i + j) == (N * (N - 1) + j)) always @(posedge clk) B_reg[j] = B_pipe[N * (N - 1) + j];
+
+                assign A_mux[i] = A_start_en[i] == 0 ? 'b0 : A_in;
+                assign B_mux[j] = B_start_en[j] == 0 ? 'b0 : B_in;
             end
         end
     endgenerate

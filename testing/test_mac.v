@@ -26,9 +26,12 @@ module test_mac
             accumulate = 'b0;
         end
         else if(load) begin
-            A = A_in;
-            B = B_in;
-            accumulate = accumulate + A * B;
+            if (A_in == 'b0 && B_in == 'b0) ;
+            else begin
+                A = A_in;
+                B = B_in;
+                accumulate = accumulate + A * B;
+            end
         end
         else begin
             C_out = accumulate;

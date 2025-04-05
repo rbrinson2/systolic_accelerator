@@ -23,7 +23,7 @@ testbench:
 	gtkwave logs/top_dump.vcd
 
 synthesis: 
-	yosys -p "read_verilog -sv $(sources); prep -top $(top_exe) -flatten -ifx; write_verilog synth/results.v; show Test"
+	yosys -p "read_verilog -sv $(sources); write_verilog synth/results.v; show Test"
 
 route:
 
