@@ -26,7 +26,7 @@ module test_mac
             accumulate = 'b0;
         end
         else if(load) begin
-            if (A_in == 'b0 && B_in == 'b0) ;
+            if (A_in == 'b0 || B_in == 'b0) ;
             else begin
                 A = A_in;
                 B = B_in;
