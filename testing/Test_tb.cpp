@@ -7,6 +7,7 @@
 
 int main(int argc, char const *argv[])
 {
+    char finished = 0;
 
     std::vector<uint32_t> A = {1,2, 3, 4, 5, 6, 7, 8, 9, 10};
     std::vector<uint32_t> B = {1,2, 3, 4, 5, 6, 7, 8, 9, 10};
@@ -37,8 +38,9 @@ int main(int argc, char const *argv[])
                 top->rst = 1;
             else {
                 top->rst = 0;
+                if (A.empty() && B.empty()) top->finished = 1;
 
-                if (top->load_out){
+                else if (top->load_out){
                     top->A_in = A.front();
                     top->B_in = B.front();
 

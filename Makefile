@@ -3,7 +3,7 @@ top_exe = Test
 sources = testing/$(top_exe).v testing/test_mac.v testing/test_control.v
 testbenches = testing/$(top_exe)_tb.cpp
 
-flags = -cc --exe -x-assign fast --trace --build -j 0
+flags = -cc --exe -x-assign fast --trace --build -j 0 
 
 default: testbench synthesis route
 	
