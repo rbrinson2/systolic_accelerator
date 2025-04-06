@@ -4,6 +4,7 @@ module Test
 (
     input clk,
     input rst,
+    input finished,
 
     input [DATA_WIDTH - 1:0] A_in, B_in,
     output load_out
@@ -29,6 +30,7 @@ module Test
         .rst(rst),
         .A_start_en(A_start_en),
         .B_start_en(B_start_en),
+        .finished(finished),
         .load(load)
     );
 
