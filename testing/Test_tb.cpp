@@ -11,6 +11,9 @@ int main(int argc, char const *argv[])
     std::vector<uint32_t> A = {1,2, 3, 4, 5, 6, 7, 8, 9, 10};
     std::vector<uint32_t> B = {1,2, 3, 4, 5, 6, 7, 8, 9, 10};
 
+    std::vector<std::vector<uint32_t>> A_m(3, A);
+    std::vector<std::vector<uint32_t>> B_m(3, B);
+
     Verilated::mkdir("logs");
     const std::unique_ptr<VerilatedContext> contextp{new VerilatedContext}; 
 
