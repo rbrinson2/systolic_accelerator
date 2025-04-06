@@ -1,6 +1,3 @@
-`define HIGH 1'b1
-
-
 
 module test_control
 #(

@@ -45,7 +45,6 @@ int main(int argc, char const *argv[])
                     B.erase(B.begin());
                 }
 
-
             }
         }
 
