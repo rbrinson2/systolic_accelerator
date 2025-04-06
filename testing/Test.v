@@ -4,25 +4,43 @@ module Test
 (
     input clk,
     input rst,
-    input finished,
 
+
+    // ----------------------------------------------------- Module Inputs
+    input finished,
     input [DATA_WIDTH - 1:0] A_in, B_in,
+
+    // ----------------------------------------------------- Module OUtputs
     output load_out
 
 );
+
+    // ----------------------------------------------------- Local params
     localparam DATA_WIDTH = 32, N = 3, M = 3;
-    
+
+    // ----------------------------------------------------- Module Variables
+    // ----- Pipe signals
     wire [DATA_WIDTH - 1:0] A_pipe [N * M - 1:0], B_pipe [N * M - 1:0];
+
+    // ----- Mux control signals
     wire [N - 1:0] A_start_en;
     wire [M - 1:0] B_start_en;
+
+    // ----- Mux output signals
     wire [DATA_WIDTH - 1:0] A_mux [N - 1:0];
     wire [DATA_WIDTH - 1:0] B_mux [M - 1:0];
+
+    // ----- A, B, and C registers
     reg [DATA_WIDTH - 1:0] C_reg [N * M - 1:0], A_reg [N - 1:0], B_reg[N - 1:0];
 
-    reg load;
 
+    // ----- Data load signal for the MACs
+    reg load;
+    
+    // ----- Output the load signal
     assign load_out = load;
     
+    // ----------------------------------------------------- Module Instantiations
     test_control #(
         .N(N), .M(M)
     ) tci (
@@ -35,6 +53,7 @@ module Test
     );
 
 
+    // ----- Auto generating connections between MACs
     genvar i, j;
     generate
         for (i = 0; i < N; i = i + 1) begin : MAC_rows
@@ -63,7 +82,7 @@ module Test
 
     
 
-// ---------------------------------------------------- Tracing
+    // ----------------------------------------------------- Tracing
 initial begin
     $display("[%0t] Tracing to logs/vlt_dump.vcd...\n", $time);
     $dumpfile("logs/top_dump.vcd");

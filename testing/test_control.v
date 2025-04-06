@@ -25,6 +25,10 @@ module test_control
     reg mom_en;
 
     // ----------------------------------------------------- FSM 
+    // Has built in momentum so that as finish goes high the
+    // FSM doesn't just stop but will continue to output
+    // a load signal depending on the size of the MAC
+    // array.
     always @(posedge clk) begin
         if (rst) current_state <= RESET;
         else current_state <= next_state;
@@ -69,12 +73,16 @@ module test_control
         if (mom_en) momentum = momentum - 1;
     end
     // ----------------------------------------------------- Start assignment
-    always @(posedge clk) begin
+    always @(negedge clk) begin
         if (rst) begin
             A_start = 'b0;
             B_start = 'b0;
         end
-        else if (load) begin
+        else if (load & finished) begin
+            A_start = {A_start[N - 2:0], 1'b0};
+            B_start = {B_start[M - 2:0], 1'b0};
+        end
+        else if (load & !finished) begin
             A_start = {A_start[N - 2:0], 1'b1};
             B_start = {B_start[M - 2:0], 1'b1};
         end
