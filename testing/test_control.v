@@ -67,8 +67,7 @@ module test_control
     
     always @(mom_en) begin
         if (rst) begin  
-            if (N >= M) momentum = N;
-            else momentum = M;
+            momentum = N + M; 
         end
         if (mom_en) momentum = momentum - 1;
     end

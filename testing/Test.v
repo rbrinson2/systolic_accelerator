@@ -48,6 +48,10 @@ module Test
     assign A_mux[2] = A_start_en[2] == 0 ? 'b0 : A_in_2;
 
     assign B_in_en   = B_start_en;
+    assign B_mux[0] = B_start_en[0] == 0 ? 'b0 : B_in;
+    assign B_mux[1] = B_start_en[1] == 0 ? 'b0 : B_in_1;
+    assign B_mux[2] = B_start_en[2] == 0 ? 'b0 : B_in_2;
+
 
     // ----------------------------------------------------- Module Instantiations
     test_control #(
@@ -83,7 +87,6 @@ module Test
                 if ((N * i + j) == (N * i + (M - 1))) always @(posedge clk) A_reg[i] = A_pipe[N * i + (M - 1)];
                 if ((N * i + j) == (N * (N - 1) + j)) always @(posedge clk) B_reg[j] = B_pipe[N * (N - 1) + j];
 
-                assign B_mux[j] = B_start_en[j] == 0 ? 'b0 : B_in;
             end
         end
     endgenerate
