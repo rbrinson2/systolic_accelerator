@@ -12,6 +12,7 @@ module Test
 
     // ----------------------------------------------------- Module OUtputs
     output [2:0] A_read_en, B_read_en,
+    output C_write_en,
     output load_out
 
 );
@@ -62,6 +63,7 @@ module Test
         .A_start_en(A_start_en),
         .B_start_en(B_start_en),
         .finished(finished),
+        .C_write_en(C_write_en),
         .load(load)
     );
 
@@ -92,7 +94,7 @@ module Test
     endgenerate
 
     
-
+    
     // ----------------------------------------------------- Tracing
 initial begin
     $display("[%0t] Tracing to logs/vlt_dump.vcd...\n", $time);
