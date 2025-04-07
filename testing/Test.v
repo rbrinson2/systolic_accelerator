@@ -11,7 +11,7 @@ module Test
     input [DATA_WIDTH - 1:0] A_in, A_in_1, A_in_2, B_in, B_in_1, B_in_2,
 
     // ----------------------------------------------------- Module OUtputs
-    output A_in_en, A_in_1_en, A_in_2_en, B_in_en, B_in_1_en, B_in_2_en,
+    output [2:0] A_in_en, B_in_en,
     output load_out
 
 );
@@ -42,13 +42,12 @@ module Test
     assign load_out = load;
     
     // ----------------------------------------------------- 
-    assign A_in_en   = A_start_en[0];
-    assign A_in_1_en = A_start_en[1];
-    assign A_in_2_en = A_start_en[2];
+    assign A_in_en   = A_start_en;
+    assign A_mux[0] = A_start_en[0] == 0 ? 'b0 : A_in;
+    assign A_mux[1] = A_start_en[1] == 0 ? 'b0 : A_in_1;
+    assign A_mux[2] = A_start_en[2] == 0 ? 'b0 : A_in_2;
 
-    assign B_in_en   = B_start_en[0];
-    assign B_in_1_en = B_start_en[1];
-    assign B_in_2_en = B_start_en[2];
+    assign B_in_en   = B_start_en;
 
     // ----------------------------------------------------- Module Instantiations
     test_control #(
@@ -84,7 +83,6 @@ module Test
                 if ((N * i + j) == (N * i + (M - 1))) always @(posedge clk) A_reg[i] = A_pipe[N * i + (M - 1)];
                 if ((N * i + j) == (N * (N - 1) + j)) always @(posedge clk) B_reg[j] = B_pipe[N * (N - 1) + j];
 
-                assign A_mux[i] = A_start_en[i] == 0 ? 'b0 : A_in;
                 assign B_mux[j] = B_start_en[j] == 0 ? 'b0 : B_in;
             end
         end
