@@ -11,7 +11,7 @@ module Test
     input [DATA_WIDTH - 1:0] A_in, A_in_1, A_in_2, B_in, B_in_1, B_in_2,
 
     // ----------------------------------------------------- Module OUtputs
-    output [2:0] A_in_en, B_in_en,
+    output [2:0] A_read_en, B_read_en,
     output load_out
 
 );
@@ -42,12 +42,12 @@ module Test
     assign load_out = load;
     
     // ----------------------------------------------------- 
-    assign A_in_en   = A_start_en;
+    assign A_read_en  = A_start_en;
     assign A_mux[0] = A_start_en[0] == 0 ? 'b0 : A_in;
     assign A_mux[1] = A_start_en[1] == 0 ? 'b0 : A_in_1;
     assign A_mux[2] = A_start_en[2] == 0 ? 'b0 : A_in_2;
 
-    assign B_in_en   = B_start_en;
+    assign B_read_en   = B_start_en;
     assign B_mux[0] = B_start_en[0] == 0 ? 'b0 : B_in;
     assign B_mux[1] = B_start_en[1] == 0 ? 'b0 : B_in_1;
     assign B_mux[2] = B_start_en[2] == 0 ? 'b0 : B_in_2;

@@ -69,7 +69,7 @@ void A_Loading_Logic(
     std::vector<std::vector<uint32_t>> &a
 ){
     
-    switch (t->A_in_en)
+    switch (t->A_read_en)
     {
     case 1:
         t->A_in = a.at(0).front();
@@ -117,7 +117,7 @@ void B_Loading_Logic(
     std::unique_ptr<VTest> &t, 
     std::vector<std::vector<uint32_t>> &b
 ){
-    switch (t->B_in_en)
+    switch (t->B_read_en)
     {
     case 1:
         t->B_in = b.at(0).front();

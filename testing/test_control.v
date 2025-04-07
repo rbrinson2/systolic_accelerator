@@ -14,7 +14,7 @@ module test_control
     output reg load
 );
     // ----------------------------------------------------- FSM Variables
-    localparam RESET = 2'b00, LOAD_WAIT = 2'b01, LOAD = 2'b10, FINISH = 2'B11;
+    localparam RESET = 'b00, LOAD_WAIT = 'b01, LOAD = 'b10, FINISH = 'B11;
     reg [1:0] current_state, next_state;
 
     // ----------------------------------------------------- Module variables
