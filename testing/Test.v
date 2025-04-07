@@ -8,9 +8,10 @@ module Test
 
     // ----------------------------------------------------- Module Inputs
     input finished,
-    input [DATA_WIDTH - 1:0] A_in, B_in,
+    input [DATA_WIDTH - 1:0] A_in, A_in_1, A_in_2, B_in, B_in_1, B_in_2,
 
     // ----------------------------------------------------- Module OUtputs
+    output A_in_en, A_in_1_en, A_in_2_en, B_in_en, B_in_1_en, B_in_2_en,
     output load_out
 
 );
@@ -37,9 +38,18 @@ module Test
     // ----- Data load signal for the MACs
     reg load;
     
-    // ----- Output the load signal
+    // ----------------------------------------------------- Load Signal Output
     assign load_out = load;
     
+    // ----------------------------------------------------- 
+    assign A_in_en   = A_start_en[0];
+    assign A_in_1_en = A_start_en[1];
+    assign A_in_2_en = A_start_en[2];
+
+    assign B_in_en   = B_start_en[0];
+    assign B_in_1_en = B_start_en[1];
+    assign B_in_2_en = B_start_en[2];
+
     // ----------------------------------------------------- Module Instantiations
     test_control #(
         .N(N), .M(M)
