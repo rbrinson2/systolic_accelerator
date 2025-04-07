@@ -5,6 +5,10 @@
 #include "verilated.h"
 #include "VTest.h"
 
+void A_Loading_Logic(std::unique_ptr<VTest> &t, std::vector<std::vector<uint32_t>> &a);
+void B_Loading_Logic(std::unique_ptr<VTest> &t, std::vector<std::vector<uint32_t>> &b);
+
+
 int main(int argc, char const *argv[])
 {
     char finished = 0;
@@ -40,47 +44,20 @@ int main(int argc, char const *argv[])
                 top->rst = 0;
                 if (A_m.at(0).empty() && B_m.at(0).empty()) top->finished = 1;
                 else {
-
-                    switch (top->A_in_en)
-                    {
-                    case 1:
-                        top->A_in = A_m.at(0).front();
-                        if (top->load_out) A_m.at(0).erase(A_m.at(0).begin());
-                        break;
-                    case 3:
-                        top->A_in = A_m.at(0).front();
-                        top->A_in_1 = A_m.at(1).front();
-                        if (top->load_out){
-                            A_m.at(0).erase(A_m.at(0).begin());
-                            A_m.at(1).erase(A_m.at(1).begin());
-                        }
-                        break;
-                    
-                    case 7:
-                        top->A_in = A_m.at(0).front();
-                        top->A_in_1 = A_m.at(1).front();
-                        top->A_in_2 = A_m.at(2).front();
-                        if (top->load_out){
-                            A_m.at(0).erase(A_m.at(0).begin());
-                            A_m.at(1).erase(A_m.at(1).begin());
-                            A_m.at(2).erase(A_m.at(2).begin());
-                        }
-                        break;
-                    default:
-                        break;
-                    }
+                    A_Loading_Logic(top, A_m);
+                    B_Loading_Logic(top, B_m);
 
                     // top->A_in = A_m.at(0).front();
-                    top->B_in = B_m.at(0).front();
+                    // top->B_in = B_m.at(0).front();
                     
                     
                     // top->A_in = A.front();
                     // top->B_in = B.front();
 
-                    if (top->load_out){
+                    // if (top->load_out){
                         // A_m.at(0).erase(A_m.at(0).begin());
-                        B_m.at(0).erase(B_m.at(0).begin());
-                    }
+                        // B_m.at(0).erase(B_m.at(0).begin());
+                    // }
                 }
 
             }
@@ -94,3 +71,72 @@ int main(int argc, char const *argv[])
     return 0;
 }
 
+
+void A_Loading_Logic(
+    std::unique_ptr<VTest> &t,
+    std::vector<std::vector<uint32_t>> &a
+){
+    
+    switch (t->A_in_en)
+    {
+    case 1:
+        t->A_in = a.at(0).front();
+        if (t->load_out) a.at(0).erase(a.at(0).begin());
+        break;
+    case 3:
+        t->A_in = a.at(0).front();
+        t->A_in_1 = a.at(1).front();
+        if (t->load_out){
+            a.at(0).erase(a.at(0).begin());
+            a.at(1).erase(a.at(1).begin());
+        }
+        break;
+    
+    case 7:
+        t->A_in = a.at(0).front();
+        t->A_in_1 = a.at(1).front();
+        t->A_in_2 = a.at(2).front();
+        if (t->load_out){
+            a.at(0).erase(a.at(0).begin());
+            a.at(1).erase(a.at(1).begin());
+            a.at(2).erase(a.at(2).begin());
+        }
+        break;
+    default:
+        break;
+    }
+
+}
+
+void B_Loading_Logic(std::unique_ptr<VTest> &t, std::vector<std::vector<uint32_t>> &b) {
+    switch (t->B_in_en)
+    {
+    case 1:
+        t->B_in = b.at(0).front();
+        if (t->load_out) b.at(0).erase(b.at(0).begin());
+        break;
+    case 3:
+        t->B_in = b.at(0).front();
+        t->B_in_1 = b.at(1).front();
+        if (t->load_out){
+            b.at(0).erase(b.at(0).begin());
+            b.at(1).erase(b.at(1).begin());
+        }
+        break;
+    
+    case 7:
+        t->B_in   = b.at(0).front();
+        t->B_in_1 = b.at(1).front();
+        t->B_in_2 = b.at(2).front();
+        if (t->load_out){
+            b.at(0).erase(b.at(0).begin());
+            b.at(1).erase(b.at(1).begin());
+            b.at(2).erase(b.at(2).begin());
+        }
+        break;
+    default:
+        break;
+    }
+
+
+}
