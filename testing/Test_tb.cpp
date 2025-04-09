@@ -7,7 +7,7 @@
 
 void A_Loading_Logic(std::unique_ptr<VTest> &t, std::vector<std::vector<uint32_t>> &a);
 void B_Loading_Logic(std::unique_ptr<VTest> &t, std::vector<std::vector<uint32_t>> &b);
-
+void MAC(std::vector<uint32_t> &a, std::vector<uint32_t> &b, std::vector<uint32_t> &c);
 
 int main(int argc, char const *argv[])
 {
@@ -15,6 +15,7 @@ int main(int argc, char const *argv[])
 
     std::vector<uint32_t> A = {1,2, 3, 4, 5, 6, 7, 8, 9, 10};
     std::vector<uint32_t> B = {1,2, 3, 4, 5, 6, 7, 8, 9, 10};
+    std::vector<uint32_t> C, C_gold;
 
     std::vector<std::vector<uint32_t>> A_m(3, A);
     std::vector<std::vector<uint32_t>> B_m(3, B);
@@ -51,6 +52,10 @@ int main(int argc, char const *argv[])
                     A_Loading_Logic(top, A_m);
                     B_Loading_Logic(top, B_m);
                 }
+                
+                if (top->Write_en){
+                    C.push_back(top->C_out);
+                }
 
             }
         }
@@ -58,6 +63,10 @@ int main(int argc, char const *argv[])
         top->eval();
     }
 
+    for (int i = 0; i < C.size(); i++){
+        std::cout << " " << i << ": " << C.at(i);
+    }
+    std::cout << std::endl;
 
     top->final();
     return 0;
@@ -160,4 +169,8 @@ void B_Loading_Logic(
     }
 
 
+}
+
+
+void MAC(std::vector<uint32_t> &a, std::vector<uint32_t> &b, std::vector<uint32_t> &c){
 }

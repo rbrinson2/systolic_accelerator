@@ -24,9 +24,8 @@ module test_control
 
     integer unsigned momentum;
     reg mom_en;
-    reg c_write;
 
-    // ----------------------------------------------------- FSM 
+    // ----------------------------------------------------- Load FSM 
     // Has built in momentum so that as finish goes high the
     // FSM doesn't just stop but will continue to output
     // a load signal depending on the size of the MAC
@@ -73,6 +72,7 @@ module test_control
         end
         if (mom_en) momentum = momentum - 1;
     end
+    // ----------------------------------------------------- Write FSM 
     // ----------------------------------------------------- Start assignment
     always @(negedge clk) begin
         if (rst) begin
@@ -93,7 +93,7 @@ module test_control
     always @(A_start) A_start_en <= A_start;
     always @(B_start) B_start_en <= B_start;
 
-    assign C_write_en = momentum > 0 ? 'b0 : 'b1;
+    always @(posedge clk) C_write_en = momentum > 0 ? 'b0 : 'b1;
     
 
 endmodule

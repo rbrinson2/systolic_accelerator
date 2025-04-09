@@ -11,9 +11,10 @@ module Test
     input [DATA_WIDTH - 1:0] A_in, A_in_1, A_in_2, B_in, B_in_1, B_in_2,
 
     // ----------------------------------------------------- Module OUtputs
-    output [2:0] A_read_en, B_read_en,
-    output C_write_en,
-    output load_out
+    output reg [DATA_WIDTH - 1:0] C_out,
+    output reg [2:0] A_read_en, B_read_en,
+    output reg Write_en,
+    output reg load_out
 
 );
 
@@ -34,10 +35,12 @@ module Test
 
     // ----- A, B, and C registers
     reg [DATA_WIDTH - 1:0] C_reg [N * M - 1:0], A_reg [N - 1:0], B_reg[N - 1:0];
+    integer C_reg_iter;
 
 
     // ----- Data load signal for the MACs
     reg load;
+    wire write;
     
     // ----------------------------------------------------- Load Signal Output
     assign load_out = load;
@@ -63,7 +66,7 @@ module Test
         .A_start_en(A_start_en),
         .B_start_en(B_start_en),
         .finished(finished),
-        .C_write_en(C_write_en),
+        .C_write_en(write),
         .load(load)
     );
 
@@ -93,6 +96,19 @@ module Test
         end
     endgenerate
 
+    // ----------------------------------------------------- Write Mux
+    always @(posedge clk) begin
+        if (rst) begin
+            C_out  = 'b0;
+            C_reg_iter  = 0;
+        end
+        else if(write && C_reg_iter < N * M + 1) begin 
+            C_out = C_reg[C_reg_iter];
+            C_reg_iter = C_reg_iter + 1;
+        end
+    end
+
+    assign Write_en = C_reg_iter < N * M + 1 ? write : 'b0;
     
     
     // ----------------------------------------------------- Tracing
