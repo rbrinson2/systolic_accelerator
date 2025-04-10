@@ -2,6 +2,8 @@
 top_exe = Test
 source_dir = testing
 sources = $(source_dir)/Test.v $(source_dir)/test_mac.v $(source_dir)/test_control.v
+synth_dir = synth
+synth = results
 route_dir = route
 testbenches = testing/$(top_exe)_tb.cpp
 
@@ -34,8 +36,8 @@ routing:
 	@echo "#------------------------------------#"
 	@echo "#             ROUTING                #"
 	@echo "#------------------------------------#"
-	sudo docker run --rm -it \
-			-v ./$(source_dir)/:/OpenROAD-flow-scripts/flow/designs/src/test \
+	docker run --rm -it \
+			-v ./$(synth_dir):/OpenROAD-flow-scripts/flow/designs/src/test \
 			-v ./$(route_dir):/OpenROAD-flow-scripts/flow/designs/sky130hd/test \
 			-e DISPLAY=${DISPLAY} \
 			openroad/orfs
