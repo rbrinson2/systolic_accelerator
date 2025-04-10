@@ -1,6 +1,8 @@
 
 top_exe = Test
-sources = testing/$(top_exe).v testing/test_mac.v testing/test_control.v
+source_dir = testing
+sources = $(source_dir)/*.v
+route_dir = route
 testbenches = testing/$(top_exe)_tb.cpp
 
 flags = -cc --exe -x-assign fast --trace --build -j 0 
@@ -26,7 +28,11 @@ synthesis:
 	yosys -p "read_verilog -sv $(sources); write_verilog synth/results.v; show Test"
 
 route:
-
+	docker run --rm -it \
+			-v $(pwd)/$(source_dir):/OpenROAD-flow-scripts/flow/designs/src/$(top_exp) \
+			-v $(pwd)/$(route_dir):/OpenROAD-flow-scripts/flow/designs/sky130hd/$(top_exp) \
+			-e DISPLAY=${DISPLAY} \
+			openroad/orfs
 .PHONEY: clean
 clean:
 	rm -r obj_dir/ logs/
