@@ -5,17 +5,18 @@ module test_control
 )
 (
     // ----------------------------------------------------- Module Inputs
-    input clk, rst,
-    input finished,
+    input                   clk, rst,
+    input                   finished,
 
     // ----------------------------------------------------- Module Outputs
-    output reg [N - 1:0] A_start_en,
-    output reg [M - 1:0] B_start_en,
-    output reg load
+    output reg [N - 1:0]    A_start_en,
+    output reg [M - 1:0]    B_start_en,
+    output reg              C_write_en,
+    output reg              load
 );
     // ----------------------------------------------------- FSM Variables
-    localparam RESET = 'b00, LOAD_WAIT = 'b01, LOAD = 'b10, FINISH = 'B11;
-    reg [1:0] current_state, next_state;
+    localparam RESET = 'b00, LOAD_WAIT = 'b01, LOAD = 'b10, FINISH = 'b11;
+    reg [2:0] current_state, next_state;
 
     // ----------------------------------------------------- Module variables
     reg [N - 1:0] A_start;
@@ -24,7 +25,7 @@ module test_control
     integer unsigned momentum;
     reg mom_en;
 
-    // ----------------------------------------------------- FSM 
+    // ----------------------------------------------------- Load FSM 
     // Has built in momentum so that as finish goes high the
     // FSM doesn't just stop but will continue to output
     // a load signal depending on the size of the MAC
@@ -71,6 +72,7 @@ module test_control
         end
         if (mom_en) momentum = momentum - 1;
     end
+    // ----------------------------------------------------- Write FSM 
     // ----------------------------------------------------- Start assignment
     always @(negedge clk) begin
         if (rst) begin
@@ -90,5 +92,8 @@ module test_control
 
     always @(A_start) A_start_en <= A_start;
     always @(B_start) B_start_en <= B_start;
+
+    always @(posedge clk) C_write_en = momentum > 0 ? 'b0 : 'b1;
+    
 
 endmodule
