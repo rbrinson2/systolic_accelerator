@@ -6,6 +6,7 @@ synth_dir = synth
 synth = results
 route_dir = route
 testbenches = testing/$(top_exe)_tb.cpp
+orfs_root = ~/Downloads
 
 flags = -cc --exe -x-assign fast --trace --build -j 0 
 
@@ -36,11 +37,7 @@ routing:
 	@echo "#------------------------------------#"
 	@echo "#             ROUTING                #"
 	@echo "#------------------------------------#"
-	docker run --rm -it \
-			-v ./testing:/OpenROAD-flow-scripts/flow/designs/src/Test \
-			-v ./spm/config:/OpenROAD-flow-scripts/flow/designs/sky130hd/Test \
-			-e DISPLAY=${DISPLAY} \
-			openroad/orfs
+
 
 .PHONEY: clean
 clean:
