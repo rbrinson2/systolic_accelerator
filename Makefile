@@ -37,8 +37,8 @@ routing:
 	@echo "#             ROUTING                #"
 	@echo "#------------------------------------#"
 	docker run --rm -it \
-			-v ./$(synth_dir):/OpenROAD-flow-scripts/flow/designs/src/test \
-			-v ./$(route_dir):/OpenROAD-flow-scripts/flow/designs/sky130hd/test \
+			-v ./testing:/OpenROAD-flow-scripts/flow/designs/src/Test \
+			-v ./spm/config:/OpenROAD-flow-scripts/flow/designs/sky130hd/Test \
 			-e DISPLAY=${DISPLAY} \
 			openroad/orfs
 
