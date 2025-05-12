@@ -31,7 +31,7 @@ synthesis:
 	@echo "#------------------------------------#"
 	@echo "#             SYNTHESIS              #"
 	@echo "#------------------------------------#"
-	yosys -p "read_verilog -sv $(sources); write_verilog synth/results.v; show Test"
+	yosys -p "read_verilog $(sources); write_verilog synth/results.v; show Test"
 
 routing:	
 	@echo "#------------------------------------#"
